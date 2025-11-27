@@ -28,6 +28,7 @@ input_method = st.radio(
 
 # Initialize user_input
 user_input = ""
+uploaded_file = None
 
 # ===== PASTE TEXT METHOD =====
 if input_method == "Paste Text":
@@ -39,7 +40,7 @@ if input_method == "Paste Text":
 
 # ===== FILE UPLOAD METHOD =====
 else:  # input_method == "Upload File"
-    st.write("**Supported formats:** PDF, DOCX (Word), PPTX (PowerPoint), TXT")
+    st.write("**Supported formats:** PDF, DOCX (Word), PPTX (PowerPoint), TXT (Text) --- (Maximum Size: 5MB)")
     
     uploaded_file = st.file_uploader(
         label="Upload a file to summarize",
@@ -48,18 +49,26 @@ else:  # input_method == "Upload File"
     )
     
     if uploaded_file is not None:
-        # Extract text from uploaded file
-        user_input = extract_text_from_file(uploaded_file)
+        # Check file size (limit to 5MB)
+        max_size_mb = 5
+        file_size_mb = uploaded_file.size / (1024 * 1024)
         
-        if user_input:
-            st.success(f"✅ Successfully extracted text from {uploaded_file.name}")
-            st.write(f"**File size:** {len(user_input)} characters")
-        else:
-            st.error("Failed to extract text. Please check the file.")
+        if file_size_mb > max_size_mb:
+            st.error(f"❌ File too large! Max size: {max_size_mb}MB, your file: {file_size_mb:.1f}MB")
             user_input = ""
+        else:
+            # Extract text from uploaded file (Only proceeds if size check passed)
+            user_input = extract_text_from_file(uploaded_file)
+            
+            if user_input:
+                st.success(f"✅ Successfully extracted text from {uploaded_file.name}")
+                st.write(f"**File size:** {len(user_input)} characters")
+            else:
+                st.error("Failed to extract text. Please check the file.")
+                user_input = ""
 
 # ===== SUMMARIZATION OPTIONS =====
-if user_input:  # Only show options if there's content
+if user_input and client:  # Only show options if there's content and client is initialized
     st.divider()
     st.subheader("⚙️ Summarization Settings")
     
