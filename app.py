@@ -15,34 +15,70 @@ st.set_page_config(
 
 # Title
 st.title("📝 AI Content Summarizer")
-st.write("Paste any text below, and AI will create a concise summary for you.")
+st.write("Paste text, upload a file, or provide a URL to summarize with AI.")
 
-# Input section
-user_input = st.text_area(
-    label="Paste your text here:",
-    placeholder="Enter the document or article you want summarized...",
-    height=200
+# ===== INPUT SOURCE SELECTION =====
+st.subheader("📥 Choose Your Input Method")
+
+input_method = st.radio(
+    "How do you want to provide content?",
+    ("Paste Text", "Upload File"),
+    horizontal=True
 )
 
-# Summarization options
-col1, col2 = st.columns(2)
-with col1:
-    summary_length = st.radio(
-        "Summary length:",
-        ("Short (1-2 sentences)", "Medium (3-5 sentences)", "Long (detailed)")
+# Initialize user_input
+user_input = ""
+
+# ===== PASTE TEXT METHOD =====
+if input_method == "Paste Text":
+    user_input = st.text_area(
+        label="Paste your text here:",
+        placeholder="Enter the document or article you want summarized...",
+        height=200
     )
 
-with col2:
-    tone = st.radio(
-        "Tone:",
-        ("Neutral", "Academic", "Casual")
+# ===== FILE UPLOAD METHOD =====
+else:  # input_method == "Upload File"
+    st.write("**Supported formats:** PDF, DOCX (Word), PPTX (PowerPoint), TXT")
+    
+    uploaded_file = st.file_uploader(
+        label="Upload a file to summarize",
+        type=["pdf", "docx", "pptx", "txt"],
+        accept_multiple_files=False  # One file at a time
     )
+    
+    if uploaded_file is not None:
+        # Extract text from uploaded file
+        user_input = extract_text_from_file(uploaded_file)
+        
+        if user_input:
+            st.success(f"✅ Successfully extracted text from {uploaded_file.name}")
+            st.write(f"**File size:** {len(user_input)} characters")
+        else:
+            st.error("Failed to extract text. Please check the file.")
+            user_input = ""
 
-# Summarize button
-if st.button("✨ Summarize", type="primary"):
-    if not user_input.strip():
-        st.error("Please paste some text first!")
-    else:
+# ===== SUMMARIZATION OPTIONS =====
+if user_input:  # Only show options if there's content
+    st.divider()
+    st.subheader("⚙️ Summarization Settings")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        summary_length = st.radio(
+            "Summary length:",
+            ("Short (1-2 sentences)", "Medium (3-5 sentences)", "Long (detailed)")
+        )
+
+    with col2:
+        tone = st.radio(
+            "Tone:",
+            ("Neutral", "Academic", "Casual")
+        )
+
+    # ===== SUMMARIZE BUTTON =====
+    if st.button("✨ Summarize", type="primary", use_container_width=True):
+        
         # Create prompt based on user selections
         length_guide = {
             "Short (1-2 sentences)": "Summarize in 1-2 sentences",
@@ -68,7 +104,7 @@ Summary:"""
         # Show loading indicator
         with st.spinner("🤖 AI is summarizing... please wait"):
             try:
-                # 2. Updated API Call using the client object
+                # Call OpenAI API
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
@@ -76,7 +112,7 @@ Summary:"""
                     max_tokens=500
                 )
                 
-                # Extract summary (also slightly different in v1.0.0+)
+                # Extract summary
                 summary = response.choices[0].message.content
                 
                 # Display results
@@ -87,18 +123,23 @@ Summary:"""
                 # Show metadata
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Original Length", f"{len(user_input)} characters")
+                    st.metric("Original Length", f"{len(user_input)} chars")
                 with col2:
-                    st.metric("Summary Length", f"{len(summary)} characters")
+                    st.metric("Summary Length", f"{len(summary)} chars")
                 
                 # Copy button (user can copy summary)
-                st.text_area("Copy your summary:", value=summary, height=100)
+                st.text_area("📋 Copy your summary:", value=summary, height=100)
                 
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
                 st.write("Make sure your API key is valid and you have remaining API quota.")
 
+else:
+    if input_method == "Upload File" and uploaded_file is None:
+        st.info("👆 Upload a file above to get started")
+    elif input_method == "Paste Text":
+        st.info("👆 Paste some text above to get started")
+
 # Footer
 st.divider()
-st.write("**How it works:** This app uses OpenAI's GPT-3.5-turbo to understand and summarize text. All processing happens in real-time.")
-st.write("**Cost:** ~$0.001 per summary")
+st.write("**How it works:** Upload or paste content → AI creates a summary → Copy it with one click!")
