@@ -101,4 +101,4 @@ Summary:"""
 # Footer
 st.divider()
 st.write("**How it works:** This app uses OpenAI's GPT-3.5-turbo to understand and summarize text. All processing happens in real-time.")
-st.write("**Cost:** ~$0.001 per summary (very cheap!)")
+st.write("**Cost:** ~$0.001 per summary")
