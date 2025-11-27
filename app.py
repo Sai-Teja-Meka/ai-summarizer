@@ -1,14 +1,10 @@
 import streamlit as st
 import openai # The new client is imported from the top-level 'openai' module
-from dotenv import load_dotenv
-import os
 
-# Load environment variables (API key)
-load_dotenv()
 # 1. Initialize the Client
 # The API key is automatically picked up from the environment variable "OPENAI_API_KEY"
 # or you can pass it explicitly: client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-client = openai.OpenAI() 
+client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # Page configuration
 st.set_page_config(
