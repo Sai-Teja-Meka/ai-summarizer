@@ -268,7 +268,7 @@ st.markdown("""
     <h1 style="font-size: 42px; margin: 0; background: linear-gradient(90deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
         📖🌌 PromptMetrics
     </h1>
-    <p style="font-size: 18px; color: #666; margin-top: 10px;">
+    <p style="font-size: 18px; color: #667eea; margin-top: 10px;">
         Generate, compare, and analyze summaries with professional precision.
     </p>
 </div>
