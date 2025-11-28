@@ -265,7 +265,7 @@ with st.sidebar:
 # ===== MAIN CONTENT (Using Tabs for Organization) =====
 st.markdown("""
 <div style="text-align: center; padding: 30px 0; margin-bottom: 30px;">
-    <h1 style="font-size: 42px; margin: 0; background: linear-gradient(90deg, \#00FFFF, \#FF00FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+    <h1 style="font-size: 42px; margin: 0; background: linear-gradient(90deg, #00ffff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text-shadow: 0 0 10px rgba(255, 0, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5);">
         📖🌌 PromptMetrics
     </h1>
     <p style="font-size: 18px; color: #666; margin-top: 10px;">
