@@ -88,26 +88,36 @@ def calculate_basic_metrics(reference: str, candidate: str) -> Dict:
 
 def calculate_readability_score(text: str) -> Dict:
     """
-    Estimate readability using simple metrics
+    Estimate readability using simple metrics (Simplified Flesch-Kincaid approximation)
     
     Returns:
         Dict with readability metrics
     """
-    
+    if not text or not text.strip():
+        return {
+            "avg_word_length": 0,
+            "avg_sentence_length": 0,
+            "readability_score": 0
+        }
+        
     words = text.split()
-    sentences = text.split('.')
+    # Improved splitting to handle ?, !, and avoid empty strings
+    sentences = [s.strip() for s in text.replace('?', '.').replace('!', '.').split('.') if s.strip()]
     
     avg_word_length = sum(len(w) for w in words) / len(words) if words else 0
     avg_sentence_length = len(words) / len(sentences) if sentences else 0
     
-    # Simple scoring: lower is better (shorter words/sentences = easier to read)
-    readability_score = min(100, round((5 - avg_word_length + 10 - avg_sentence_length) * 5, 0))
-    readability_score = max(20, readability_score)  # Keep between 20-100
+    # ===== NEW FORMULA (Flesch-Kincaid approximation) =====
+    # Score calculation is now less aggressive against longer sentences and words.
+    raw_score = 100 - (avg_sentence_length * 1.0) - (avg_word_length * 10)
+    
+    # Ensure score stays within 0-100 range
+    readability_score = max(0, min(100, raw_score))
     
     return {
         "avg_word_length": round(avg_word_length, 2),
         "avg_sentence_length": round(avg_sentence_length, 2),
-        "readability_score": int(readability_score)  # Higher = more readable
+        "readability_score": int(readability_score)
     }
 
 
