@@ -1,3 +1,6 @@
 streamlit
 openai
 python-dotenv
+pandas
+nltk # Likely required for text processing
+rouge-score # Likely required for ROUGE calculation
