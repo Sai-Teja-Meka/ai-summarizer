@@ -2,9 +2,10 @@ streamlit
 openai
 pandas
 python-dotenv
-# Add packages required by your local modules:
 nltk
 scikit-learn
 rouge-score
+pypdf
+python-pptx # Required for .pptx file support
 python-docx
-pdfminer.six # For PDF processing
+pdfminer.six
