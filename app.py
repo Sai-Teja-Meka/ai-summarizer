@@ -266,7 +266,7 @@ with st.sidebar:
 st.markdown("""
 <div style="text-align: center; padding: 30px 0; margin-bottom: 30px;">
     <h1 style="font-size: 42px; margin: 0; background: linear-gradient(90deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-        ✨ Smart Summary Maker
+        ✨ PromptMetrics - A unified platform for A/B testing and optimizing AI summarization prompts using ROUGE and clarity scores.
     </h1>
     <p style="font-size: 18px; color: #666; margin-top: 10px;">
         Generate, compare, and analyze summaries with professional precision.
